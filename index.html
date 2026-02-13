@@ -48,7 +48,8 @@
         .heart::before { top: -50px; left: 0; }
         .heart::after { top: 0; left: 50px; }
 
-        #final-message, #photo-container {
+        /* Conteneurs de surprises */
+        #final-message, #photo-container, #dino-message {
             display: none;
             position: absolute;
             z-index: 20;
@@ -57,7 +58,7 @@
             width: 100%;
         }
 
-        #final-message {
+        .custom-text {
             font-family: 'Brush Script MT', cursive;
             font-size: 4.5rem;
             color: white;
@@ -70,16 +71,16 @@
             border: 8px solid white;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            object-fit: contain;
         }
 
-        .falling-heart {
+        /* Pluie d'éléments */
+        .falling-item {
             position: absolute;
             top: -50px;
-            font-size: 24px;
+            font-size: 30px;
             user-select: none;
             pointer-events: none;
-            z-index: 25; /* Mis au premier plan */
+            z-index: 25;
             animation: fall linear forwards;
         }
 
@@ -100,11 +101,13 @@
         <div class="heart" id="main-heart"></div>
     </div>
 
-    <div id="final-message">Je t'aime Louis</div>
+    <div id="final-message" class="custom-text">Je t'aime Louis</div>
     
     <div id="photo-container">
-        <img src="TA_PHOTO.jpeg" alt="Notre photo">
+        <img id="slideshow" src="photo pour cade.jpeg" alt="Nos photos">
     </div>
+
+    <div id="dino-message" class="custom-text">RRAAWRRRRRRRR 🦖</div>
 
     <script>
         let clickCount = 0;
@@ -113,7 +116,11 @@
         const heart = document.getElementById('main-heart');
         const message = document.getElementById('final-message');
         const photoCont = document.getElementById('photo-container');
+        const slideImg = document.getElementById('slideshow');
+        const dinoMsg = document.getElementById('dino-message');
+        
         let rainInterval;
+        let currentRainEmoji = '❤️';
 
         heart.addEventListener('click', () => {
             clickCount++;
@@ -124,23 +131,35 @@
 
         function startSurprise() {
             mainUI.style.display = 'none';
-            clickCount = 0; 
+            clickCount = 0;
             
-            // Démarrer la pluie de coeurs
-            rainInterval = setInterval(createFallingHeart, 150);
-
             if (cycle === 1) {
+                // CYCLE 1 : MESSAGE (10 sec)
+                currentRainEmoji = '❤️';
                 message.style.display = 'flex';
-                setTimeout(() => {
-                    resetToMain();
-                    cycle = 2; 
-                }, 10000); // 10 secondes
-            } else {
+                rainInterval = setInterval(createFallingItem, 150);
+                setTimeout(() => { resetToMain(); cycle = 2; }, 10000);
+
+            } else if (cycle === 2) {
+                // CYCLE 2 : DIAPORAMA (40 sec)
+                currentRainEmoji = '❤️';
                 photoCont.style.display = 'flex';
-                setTimeout(() => {
-                    resetToMain();
-                    cycle = 1; 
-                }, 15000); // 15 secondes
+                rainInterval = setInterval(createFallingItem, 150);
+                
+                // Gestion des photos (toutes les 10 sec)
+                slideImg.src = "photo pour cade.jpeg";
+                setTimeout(() => { slideImg.src = "Photo2.jpeg"; }, 10000);
+                setTimeout(() => { slideImg.src = "Photo3.jpeg"; }, 20000);
+                setTimeout(() => { slideImg.src = "Photo4.jpeg"; }, 30000);
+                
+                setTimeout(() => { resetToMain(); cycle = 3; }, 40000);
+
+            } else if (cycle === 3) {
+                // CYCLE 3 : DINO (15 sec)
+                currentRainEmoji = '🦖'; // Pluie de dinosaures !
+                dinoMsg.style.display = 'flex';
+                rainInterval = setInterval(createFallingItem, 150);
+                setTimeout(() => { resetToMain(); cycle = 1; }, 15000);
             }
         }
 
@@ -148,18 +167,19 @@
             clearInterval(rainInterval);
             message.style.display = 'none';
             photoCont.style.display = 'none';
+            dinoMsg.style.display = 'none';
             mainUI.style.display = 'flex';
         }
 
-        function createFallingHeart() {
-            const fHeart = document.createElement('div');
-            fHeart.classList.add('falling-heart');
-            fHeart.innerHTML = '❤️';
-            fHeart.style.left = Math.random() * 100 + 'vw';
-            fHeart.style.animationDuration = (Math.random() * 2 + 2) + 's';
-            fHeart.style.opacity = Math.random() * 0.7 + 0.3;
-            document.body.appendChild(fHeart);
-            setTimeout(() => { fHeart.remove(); }, 4000);
+        function createFallingItem() {
+            const item = document.createElement('div');
+            item.classList.add('falling-item');
+            item.innerHTML = currentRainEmoji;
+            item.style.left = Math.random() * 100 + 'vw';
+            item.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            item.style.opacity = Math.random() * 0.7 + 0.3;
+            document.body.appendChild(item);
+            setTimeout(() => { item.remove(); }, 4000);
         }
     </script>
 </body>

@@ -18,7 +18,6 @@
             text-align: center;
         }
 
-        /* Texte au dessus du coeur */
         .instruction {
             color: white;
             font-size: 1.5rem;
@@ -49,13 +48,13 @@
         .heart::before { top: -50px; left: 0; }
         .heart::after { top: 0; left: 50px; }
 
-        /* Styles cachés par défaut */
         #final-message, #photo-container {
             display: none;
             position: absolute;
             z-index: 20;
             flex-direction: column;
             align-items: center;
+            width: 100%;
         }
 
         #final-message {
@@ -66,21 +65,21 @@
         }
 
         #photo-container img {
-            max-width: 80%;
-            max-height: 70vh;
-            border: 10px solid white;
+            max-width: 85%;
+            max-height: 75vh;
+            border: 8px solid white;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            object-fit: contain;
         }
 
-        /* Pluie de coeurs */
         .falling-heart {
             position: absolute;
             top: -50px;
             font-size: 24px;
             user-select: none;
             pointer-events: none;
-            z-index: 5;
+            z-index: 25; /* Mis au premier plan */
             animation: fall linear forwards;
         }
 
@@ -104,12 +103,12 @@
     <div id="final-message">Je t'aime Louis</div>
     
     <div id="photo-container">
-        <img src="TA_PHOTO.JPEG" alt="Notre photo">
+        <img src="TA_PHOTO.jpeg" alt="Notre photo">
     </div>
 
     <script>
         let clickCount = 0;
-        let cycle = 1; // 1 pour texte, 2 pour photo
+        let cycle = 1; 
         const mainUI = document.getElementById('main-ui');
         const heart = document.getElementById('main-heart');
         const message = document.getElementById('final-message');
@@ -125,25 +124,23 @@
 
         function startSurprise() {
             mainUI.style.display = 'none';
-            clickCount = 0; // Reset pour le prochain cycle
+            clickCount = 0; 
             
-            // Démarrer la pluie
+            // Démarrer la pluie de coeurs
             rainInterval = setInterval(createFallingHeart, 150);
 
             if (cycle === 1) {
-                // Étape 1 : Message "Je t'aime Louis" pendant 30 sec
                 message.style.display = 'flex';
                 setTimeout(() => {
                     resetToMain();
-                    cycle = 2; // Prochain cycle sera la photo
-                }, 30000); // 30 secondes
+                    cycle = 2; 
+                }, 10000); // 10 secondes
             } else {
-                // Étape 2 : Photo pendant 1 min 30 sec
                 photoCont.style.display = 'flex';
                 setTimeout(() => {
                     resetToMain();
-                    cycle = 1; // Prochain cycle sera le texte
-                }, 90000); // 90 secondes (1min30)
+                    cycle = 1; 
+                }, 15000); // 15 secondes
             }
         }
 
@@ -159,10 +156,10 @@
             fHeart.classList.add('falling-heart');
             fHeart.innerHTML = '❤️';
             fHeart.style.left = Math.random() * 100 + 'vw';
-            fHeart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            fHeart.style.opacity = Math.random();
+            fHeart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            fHeart.style.opacity = Math.random() * 0.7 + 0.3;
             document.body.appendChild(fHeart);
-            setTimeout(() => { fHeart.remove(); }, 5000);
+            setTimeout(() => { fHeart.remove(); }, 4000);
         }
     </script>
 </body>

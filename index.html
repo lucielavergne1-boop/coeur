@@ -16,6 +16,7 @@
             overflow: hidden;
             font-family: 'Arial', sans-serif;
             text-align: center;
+            transition: background 1s ease; /* Transition douce pour le changement de couleur */
         }
 
         .instruction {
@@ -48,7 +49,6 @@
         .heart::before { top: -50px; left: 0; }
         .heart::after { top: 0; left: 50px; }
 
-        /* Conteneurs de surprises */
         #final-message, #photo-container, #dino-message {
             display: none;
             position: absolute;
@@ -73,7 +73,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        /* Pluie d'éléments */
         .falling-item {
             position: absolute;
             top: -50px;
@@ -120,7 +119,7 @@
         const dinoMsg = document.getElementById('dino-message');
         
         let rainInterval;
-        let currentRainEmoji = '❤️';
+        let rainType = 'heart';
 
         heart.addEventListener('click', () => {
             clickCount++;
@@ -134,19 +133,16 @@
             clickCount = 0;
             
             if (cycle === 1) {
-                // CYCLE 1 : MESSAGE (10 sec)
-                currentRainEmoji = '❤️';
+                rainType = 'heart';
                 message.style.display = 'flex';
                 rainInterval = setInterval(createFallingItem, 150);
                 setTimeout(() => { resetToMain(); cycle = 2; }, 10000);
 
             } else if (cycle === 2) {
-                // CYCLE 2 : DIAPORAMA (40 sec)
-                currentRainEmoji = '❤️';
+                rainType = 'heart';
                 photoCont.style.display = 'flex';
                 rainInterval = setInterval(createFallingItem, 150);
                 
-                // Gestion des photos (toutes les 10 sec)
                 slideImg.src = "photo pour cade.jpeg";
                 setTimeout(() => { slideImg.src = "Photo2.jpeg"; }, 10000);
                 setTimeout(() => { slideImg.src = "Photo3.JPG"; }, 20000);
@@ -156,10 +152,15 @@
 
             } else if (cycle === 3) {
                 // CYCLE 3 : DINO (15 sec)
-                currentRainEmoji = '🦖'; // Pluie de dinosaures !
+                rainType = 'dino';
+                // On change le fond en vert pâle
+                document.body.style.background = "#dcedc1"; 
                 dinoMsg.style.display = 'flex';
                 rainInterval = setInterval(createFallingItem, 150);
-                setTimeout(() => { resetToMain(); cycle = 1; }, 15000);
+                setTimeout(() => { 
+                    resetToMain(); 
+                    cycle = 1; 
+                }, 15000);
             }
         }
 
@@ -169,12 +170,21 @@
             photoCont.style.display = 'none';
             dinoMsg.style.display = 'none';
             mainUI.style.display = 'flex';
+            // On remet le fond dégradé rose d'origine
+            document.body.style.background = "linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%)";
         }
 
         function createFallingItem() {
             const item = document.createElement('div');
             item.classList.add('falling-item');
-            item.innerHTML = currentRainEmoji;
+            
+            if (rainType === 'heart') {
+                item.innerHTML = '❤️';
+            } else {
+                // Aléatoire entre dinosaure vert et bleu
+                item.innerHTML = Math.random() > 0.5 ? '🦖' : '🦕';
+            }
+            
             item.style.left = Math.random() * 100 + 'vw';
             item.style.animationDuration = (Math.random() * 2 + 2) + 's';
             item.style.opacity = Math.random() * 0.7 + 0.3;

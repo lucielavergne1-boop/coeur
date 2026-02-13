@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Coeur</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #fce4ec; /* Un fond rose très clair */
+        }
+
+        .heart {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background-color: #e91e63; /* Un rouge/rose vif */
+            transform: rotate(-45deg);
+            animation: beat 1s infinite alternate;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: #e91e63;
+            border-radius: 50%;
+        }
+
+        .heart::before { top: -50px; left: 0; }
+        .heart::after { top: 0; left: 50px; }
+
+        @keyframes beat {
+            from { transform: rotate(-45deg) scale(1); }
+            to { transform: rotate(-45deg) scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <div class="heart"></div>
+</body>
+</html>
+
+
+
+

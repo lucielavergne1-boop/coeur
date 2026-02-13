@@ -2,28 +2,41 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Mon Coeur</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pour Louis ❤️</title>
     <style>
         body {
+            margin: 0;
+            height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #fce4ec; /* Un fond rose très clair */
+            background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%);
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .instruction {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 50px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+            animation: bounce 2s infinite;
         }
 
         .heart {
             position: relative;
             width: 100px;
             height: 100px;
-            background-color: #e91e63; /* Un rouge/rose vif */
+            background-color: #e91e63;
             transform: rotate(-45deg);
-            animation: beat 1s infinite alternate;
+            cursor: pointer;
+            transition: transform 0.2s;
+            z-index: 10;
         }
 
-        .heart::before,
-        .heart::after {
+        .heart::before, .heart::after {
             content: "";
             position: absolute;
             width: 100px;
@@ -35,17 +48,92 @@
         .heart::before { top: -50px; left: 0; }
         .heart::after { top: 0; left: 50px; }
 
-        @keyframes beat {
-            from { transform: rotate(-45deg) scale(1); }
-            to { transform: rotate(-45deg) scale(1.2); }
+        .heart:active {
+            transform: rotate(-45deg) scale(0.9);
+        }
+
+        /* Le message final */
+        #final-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Brush Script MT', cursive;
+            font-size: 4rem;
+            color: white;
+            text-align: center;
+            text-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 20;
+            transition: opacity 1s;
+            width: 100%;
+        }
+
+        /* Animation des petits coeurs qui tombent */
+        .falling-heart {
+            position: absolute;
+            top: -20px;
+            color: #e91e63;
+            user-select: none;
+            pointer-events: none;
+            z-index: 5;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
     </style>
 </head>
 <body>
-    <div class="heart"></div>
+
+    <div class="instruction">Clique sur le cœur...</div>
+    <div class="heart" id="main-heart"></div>
+    <div id="final-message">Je t'aime Louis</div>
+
+    <script>
+        let clickCount = 0;
+        const heart = document.getElementById('main-heart');
+        const message = document.getElementById('final-message');
+        const instruction = document.querySelector('.instruction');
+
+        heart.addEventListener('click', () => {
+            clickCount++;
+
+            if (clickCount >= 4) {
+                // 1. Cacher l'instruction et le coeur
+                instruction.style.display = 'none';
+                heart.style.transition = 'opacity 0.5s';
+                heart.style.opacity = '0';
+                
+                // 2. Afficher le message "Je t'aime Louis"
+                message.style.opacity = '1';
+
+                // 3. Lancer la pluie de coeurs
+                setInterval(createFallingHeart, 100);
+            }
+        });
+
+        function createFallingHeart() {
+            const fHeart = document.createElement('div');
+            fHeart.classList.add('falling-heart');
+            fHeart.innerHTML = '❤️';
+            fHeart.style.left = Math.random() * 100 + 'vw';
+            fHeart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            fHeart.style.duration = Math.random() * 3 + 2 + 's';
+            fHeart.style.opacity = Math.random();
+            
+            document.body.appendChild(fHeart);
+
+            // Supprimer le coeur après l'animation
+            setTimeout(() => { fHeart.remove(); }, 5000);
+        }
+    </script>
 </body>
 </html>
-
-
-
-
